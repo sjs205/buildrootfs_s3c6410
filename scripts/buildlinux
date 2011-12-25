@@ -6,8 +6,19 @@
 PWD=`pwd`
 export PRJROOT=${PWD}
 
+SOURCEDIR=${PRJROOT}/source;
 BUILDROOT=buildroot-2011.08
-BUILDROOTPKG=${PRJROOT}/source/${BUILDROOT}.tar.bz2
+BUILDROOTPKG=${SOURCEDIR}/${BUILDROOT}.tar.bz2
+LINUXPKG=linux-2.6.28.6.tar.bz2
+LINUXLOCATION=/media/devshare/TQ6410/linux
+#get local linux
+cd  ${PRJROOT}/source;
+
+
+if [ ! -e "$LINUXPKG" ]; then
+	cp ${LINUXLOCATION}/${LINUXPKG} ${SOURCEDIR};
+fi
+
 
 #download
 cd  ${PRJROOT}/source;
