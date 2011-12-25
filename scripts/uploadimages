@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Script to upload images produced during the buildroot build process to a specified upload dir.
+
+# syntax $sh uploadimage -r<svn-revision>
+
+hostname=`hostname`
+revision=$1;
+
+IMAGEDIR=/home/developers/bitten-slave/Linux-base-system-branch-current_working_dir/source/buildroot-2011.08/output/images/;
+
+UPLOADDIR=/var/www/builds/images/filesystem/branches/;
+
+JFFS2IMAGEOUT=rootfs${revision}.jffs2;
+EXT2IMAGEOUT=rootfs${revision}.ext2;
+TARIMAGEOUT=rootfs${revision}.tar;
+
+
+if [ "$hostname" = "DevBox" ]; then  
+    
+    echo "Copying jffs2 image";
+    cp ${IMAGEDIR}rootfs.jffs2 ${UPLOADDIR}${JFFS2IMAGEOUT};
+    
+    echo "Copying ext2 image";
+    cp ${IMAGEDIR}rootfs.ext2 ${UPLOADDIR}${EXT2IMAGEOUT};
+    
+    echo "Copying tar image";
+    cp ${IMAGEDIR}rootfs.tar ${UPLOADDIR}${TARIMAGEOUT};
+fi
+
+echo "Copy complete..."

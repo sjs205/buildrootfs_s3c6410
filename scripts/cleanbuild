@@ -1,0 +1,19 @@
+# SVN Rev: $Rev: 69 $
+# SVN Id:  $Id: buildrootcmd.log 69 2011-10-19 12:13:03Z stevens $
+# $LastChangedDate: 2011-10-19 13:13:03 +0100 (Wed, 19 Oct 2011) $
+#setup
+
+PWD=`pwd`
+export PRJROOT=${PWD}
+
+BUILDROOT=buildroot-2011.08
+
+if [ ! -d "$BUILDROOT" ]; then
+	#clean
+	cd ${PRJROOT}/source/${BUILDROOT};
+	make distclean;
+fi
+
+echo "Source directory clean: restart build with one of the build* scripts.";
+
+

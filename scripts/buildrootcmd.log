@@ -1,0 +1,81 @@
+# SVN Rev: $Rev: 69 $
+# SVN Id:  $Id: buildrootcmd.log 69 2011-10-19 12:13:03Z stevens $
+# $LastChangedDate: 2011-10-19 13:13:03 +0100 (Wed, 19 Oct 2011) $
+#setup
+
+su -c 'apt-get build-essential'
+
+su -c 'apt-get bison gettext flex texinfo unzip'
+su -c 'apt-get ncurses-dev'
+
+echo 'export PRJROOT=/mnt/gateway' >> ~/.bashrc 
+
+mkdir ${PRJROOT}/source
+echo 'export PRJSOURCE=${PRJROOT}/source' >> ~/.bashrc 
+
+mkdir ${PRJROOT}/configs
+echo 'export PRJCONFIGS=${PRJROOT}/configs' >> ~/.bashrc 
+
+source ~/.bashrc
+
+#download
+
+cd  ${PRJROOT}/source
+wget http://buildroot.net/downloads/buildroot-2011.08.tar.bz2
+
+#unpack
+tar xvf ./buildroot-2011.08.tar.bz2
+
+#configure 
+tar xvf ./buildroot-configs.tar
+cp ${CONFIGDIR}
+#build
+cd ./buildroot-2011.08
+make menuconfig
+
+
+Compilation yealds with:
+
+* Networking Support
+*
+Networking Support (UCLIBC_HAS_NETWORK_SUPPORT) [Y/n/?] y
+  Socket support (UCLIBC_HAS_SOCKET) [Y/?] y
+  IP version 4 support (UCLIBC_HAS_IPV4) [Y/n/?] y
+  IP version 6 support (UCLIBC_HAS_IPV6) [N/y/?] n
+    Remote Procedure Call (RPC) support (UCLIBC_HAS_RPC) [Y/n/?] y
+      Full RPC support (UCLIBC_HAS_FULL_RPC) [N/y/?] (NEW) y
+      Reentrant RPC support (UCLIBC_HAS_REENTRANT_RPC) [N/y/?] (NEW) y
+  Use netlink to query interfaces (UCLIBC_USE_NETLINK) [Y/n/?] y
+    Support the AI_ADDRCONFIG flag (UCLIBC_SUPPORT_AI_ADDRCONFIG) [N/y/?] n
+  Support res_close() (bsd-compat) (UCLIBC_HAS_BSD_RES_CLOSE) [N/y/?] n
+  Use compatible but bloated _res (UCLIBC_HAS_COMPAT_RES_STATE) [Y/n/?] y
+  Use extra compatible but extra bloated _res (UCLIBC_HAS_EXTRA_COMPAT_RES_STATE) [N/y/?] n
+  Provide libresolv stub (UCLIBC_HAS_LIBRESOLV_STUB) [Y/n/?] y
+  Provide libnsl stub (UCLIBC_HAS_LIBNSL_STUB) [Y/n/?] y
+#
+# configuration written to ./.config
+#
+make[1]: Leaving directory `/mnt/gateway/source/buildroot-2011.08/output/toolchain/uClibc-0.9.32'
+touch /mnt/gateway/source/buildroot-2011.08/output/toolchain/uClibc-0.9.32/.config
+/usr/bin/make -j1 -C /mnt/gateway/source/buildroot-2011.08/output/toolchain/uClibc-0.9.32 \
+                ARCH="arm" \
+                PREFIX=/mnt/gateway/source/buildroot-2011.08/output/toolchain/uClibc_dev/ \
+
+
+
+On new devbox:
+real    44m11.844s
+user    24m5.540s
+sys     9m55.390s
+gatewaydev@DevBox:/mnt/gateway/source/buildroot-2011.08
+
+
+
+get patch for kernel 2.6.30 (vanilla)
+
+cd /mnt/gateway/source
+wget http://maxim.org.za/AT91RM9200/2.6/2.6.30-at91.patch.gz
+(before make... 
+
+Changed config...
+

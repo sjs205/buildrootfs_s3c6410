@@ -1,0 +1,108 @@
+#!/bin/bash
+#ToDo:
+# Need to add recursive dir serching. 
+
+BOOTDIR=/mnt/gateway/boot/tftpboot  
+FSMOUNTDIR=/mnt/gateway/boot/rootfs
+
+IMAGEDIR=/var/www/builds/images
+KERNELDIR=/linux
+FSDIR=/filesystem
+
+TAGDIR=/tags
+TRUNKDIR=/trunk
+BRANCHDIR=/branches
+
+IMAGEDIR=/var/www/builds/images
+KERNELDIR=/linux
+FOOTFSDIR=/filesystem
+
+echo; echo; echo "NFS setup script"; echo; echo
+
+echo "Linux kernel selection:"; echo
+
+echo "Kernel tags:"
+INDEX=0;
+for file in ${IMAGEDIR}${KERNELDIR}${TAGDIR}/*; do  
+    echo -n "[$INDEX]${file} "; 
+    stat -c %y $file | cut -d ' ' -f1
+    KERNELARRAY[$INDEX]="$file"
+    INDEX=`expr $INDEX + 1`
+done
+
+echo "Kernel trunks:"
+for file in ${IMAGEDIR}${KERNELDIR}${TRUNKDIR}/*; do  
+    echo -n "[$INDEX]${file} "; 
+    stat -c %y $file | cut -d ' ' -f1
+    KERNELARRAY[$INDEX]="$file"
+    INDEX=`expr $INDEX + 1`
+done
+
+echo "Kernel branches"
+for file in ${IMAGEDIR}${KERNELDIR}${BRANCHDIR}/*; do  
+    echo -n "[$INDEX]${file} "; 
+    stat -c %y $file | cut -d ' ' -f1
+    KERNELARRAY[$INDEX]="$file"
+    INDEX=`expr $INDEX + 1`
+done
+
+
+echo -n "Select Linux Image to Boot: ";
+read OPTION
+
+echo; echo "Copying kernel: ${KERNELARRAY[${OPTION}]}"
+echo "to ${BOOTDIR}"
+cp ${KERNELARRAY[${OPTION}]} ${BOOTDIR}/uImage
+
+echo; echo
+
+echo "Checking for previously mounted filesystems."; echo;
+
+mount | grep ${FSMOUNTDIR}
+   if [ $? == 0 ]; then
+    echo "Shutting down nfs-kernel-server daemon..."
+    /etc/init.d/nfs-kernel-server stop
+
+    echo "unmounting previous filesystem..."
+    umount /mnt/gateway/boot/rootfs -f
+
+    echo "Starting nfs-kernel-server"
+    /etc/init.d/nfs-kernel-server start
+fi
+
+
+echo; echo "Filesystem selection:\n"
+echo "Filesystem tags:"
+INDEX=0;
+for file in ${IMAGEDIR}${FSDIR}${TAGDIR}/*.ext2/; do  
+    echo -n "[$INDEX]${file} "; 
+    stat -c %y $file | cut -d ' ' -f1
+    FSARRAY[$INDEX]="$file"
+    INDEX=`expr $INDEX + 1`
+done
+
+echo "Filesystem trunks:"
+for file in ${IMAGEDIR}${FSDIR}${TRUNKDIR}/*.ext2; do  
+    echo -n "[$INDEX]${file} "; 
+    stat -c %y $file | cut -d ' ' -f1
+    FSARRAY[$INDEX]="$file"
+    INDEX=`expr $INDEX + 1`
+done
+
+echo "Filesystem branches"
+for file in ${IMAGEDIR}${FSDIR}${BRANCHDIR}/*.ext2; do  
+    echo -n "[$INDEX]${file} "; 
+    stat -c %y $file | cut -d ' ' -f1
+    FSARRAY[$INDEX]="$file"
+    INDEX=`expr $INDEX + 1`
+done
+
+
+echo -n "Select Filesystem to mount: ";
+read OPTION
+
+echo; echo "Mounting filsystem: ${FSARRAY[${OPTION}]}"
+echo "at  ${FSMOUNTDIR}"
+mount -t ext2 -o loop ${FSARRAY[${OPTION}]} ${FSMOUNTDIR}
+
+echo; echo "NFS setup complete..."; echo

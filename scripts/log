@@ -1,0 +1,131 @@
+#!/bin/bash
+# Title: log
+# Function: Script to facilitate automatic logging
+# Author: Steven Swann
+# Contact: swannonline@googlemail.com swannonline.co.uk
+# Licence: GPL
+#
+# created on: Thu Aug 25 22:22:36 BST 2011
+
+# Last modified on: Thu 2 May 2011 19:29:13 GMT
+
+
+VER=0.1
+AUTHOR='Steven Swann'
+CREATEDATE='Thu Aug 25 22:22:36 BST 2011'
+MODDATE='Fri Aug 26 01:12:00 BST 2011'
+
+
+#CURRENTLOG='${PRJROOT}/log/CURRENTLOG.log'
+CURRENTLOG="./log.log"
+
+ERR=0
+
+
+function testlogfile {
+	if [ -f ${CURRENTLOG} ]; then
+		ERR=0;
+	else
+		ERR=1;
+	fi
+}
+
+function createlogfile {
+	testlogfile
+	if [ $ERR -eq 0 ]; then
+		savelogfile
+		removelogfile
+	fi
+	echo -e "Enter log Name followed by [ENTER]:\nThis will be the name of the log once complete. \nIdeally this should contain no whitespace."
+	read LOGFILENAME
+	echo "Enter short description of log file followed by [ENTER]:"
+	read LOGFILEDESC
+	CURRENTDATE=`date`
+	TIMESTAMP=`date +%d%m%Y-%H%M%S%Z`
+	
+	touch ${CURRENTLOG}
+	ERR=$?
+	if [ $ERR -ne 0 ]; then 
+		echo "Could not create log file: ${CURRENTLOG}"
+		exit $ERR
+	fi
+	echo -e "${LOGFILENAME}_${TIMESTAMP}\nStart Date: ${CURRENTDATE}\nLog File Description:\n${LOGFILEDESC}\n\n" >> $CURRENTLOG
+}
+
+function addlog {
+	echo "Enter short log description followed by [ENTER]:"
+
+	read DESC
+
+	echo "" >> $CURRENTLOG
+
+	echo "Enter log followed by [ESC]"
+
+	read -d `echo -e "\e"` LOG 
+
+	CURRENTDATE=`date`
+
+	echo -e "LOGDATE: ${CURRENTDATE}\nDESC: ${DESC}\nLOG:$LOG\n" >> $CURRENTLOG
+
+}
+
+function savelogfile {
+	if [ -f $CURRENTLOG ]; then
+		BACKUPNAME=`head -n 1 ${CURRENTLOG}`
+		cp $CURRENTLOG $BACKUPNAME
+		ERR=$?
+		if [ $ERR -ne 0 ]; then 
+			echo "Could not save log file: ${CURRENTLOG}"
+			exit $ERR
+		fi
+		echo "log saved as ${CURRENTLOG}.log"
+	else
+		echo "No log exists!!"
+	fi
+}
+
+function removelogfile {
+	echo "Removing old log file..."
+	rm $CURRENTLOG
+}
+
+if (($# == 0)); then							# No switch implies add to log
+	testlogfile
+	if [ $ERR -ne 0 ]; then
+		echo "Log file doea not exist... Will create a new log"
+		createlogfile
+	fi
+	addlog
+else				
+	for switch in "$@" 
+	do
+	case $switch in
+		-a )										# Add log to file switch
+			addlog
+			;;
+		-n )										# New log file switch
+			echo "Creating new log file"	
+			createlogfile
+					;;
+		-s )										# Save Log switch
+			savelogfile
+			;;
+		-D )										# Delete log switch
+			echo "ARE YOU SURE YOU WANT TO REMOVE OLD LOGFILE: ${CURRENTLOG}? (YES/n)"
+			read 
+			if [ $REPLY == "YES" ]; then
+				echo "okay... deleting old logfile"
+				removelogfile
+			fi
+			;;
+											
+		-* )
+			echo -e "Not a valid option, try: \n-a \t\tAdd log to file\n-n \t\tCreate new log file\n-s \t\tSave log file\n-D \t\tDelete log file"
+
+		;;
+		esac
+	done
+fi
+
+echo -e "Complete... \n" 
+	
