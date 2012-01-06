@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#Patch the skeleton inittab to include tty1 console
+patch -p1 < ../../patches/inittab_skeleton_add_tty1.patch

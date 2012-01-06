@@ -1,0 +1,12 @@
+--- ./fs/skeleton/etc/inittab	2011-08-31 12:44:55.000000000 +0100
++++ /home/sjs205/inittab	2012-01-06 14:36:56.000000000 +0000
+@@ -23,6 +23,9 @@
+ # now run any rc scripts
+ ::sysinit:/etc/init.d/rcS
+ 
++# Put a getty on the first tty console
++tty1::respawn:/sbin/getty 38400 tty1
++
+ # Put a getty on the serial port
+ #ttyS0::respawn:/sbin/getty -L ttyS0 115200 vt100 # GENERIC_SERIAL
+ 

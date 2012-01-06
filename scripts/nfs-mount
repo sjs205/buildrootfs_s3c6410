@@ -2,10 +2,15 @@
 #ToDo:
 # Need to add recursive dir serching. 
 
+PWD=`pwd`
+export PRJROOT=${PWD}
+
+SOURCEDIR=${PRJROOT}/source;
+
 BOOTDIR=/var/tftp/boot  
 FSMOUNTDIR=/var/nfs/rootfs
 
-IMAGEDIR=/home/sjs205/svn/swannprojects/buildrootfs_s3c6410/trunk/source/buildroot-2011.08/output/images
+IMAGEDIR=${SOURCEDIR}/buildroot-2011.08/output/images
 KERNEL=/uImage
 FS=/rootfs.ext2
 
