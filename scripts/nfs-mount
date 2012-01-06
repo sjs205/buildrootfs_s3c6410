@@ -10,7 +10,7 @@ SOURCEDIR=${PRJROOT}/source;
 BOOTDIR=/var/tftp/boot  
 FSMOUNTDIR=/var/nfs/rootfs
 
-IMAGEDIR=${SOURCEDIR}/buildroot-2011.08/output/images
+IMAGEDIR=${SOURCEDIR}/${BUILDROOT}/output/images
 KERNEL=/uImage
 FS=/rootfs.ext2
 

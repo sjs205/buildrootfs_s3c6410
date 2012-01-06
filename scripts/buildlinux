@@ -5,9 +5,9 @@
 
 PWD=`pwd`
 export PRJROOT=${PWD}
+export BUILDROOT=buildroot-2011.11
 
 SOURCEDIR=${PRJROOT}/source;
-BUILDROOT=buildroot-2011.08
 BUILDROOTPKG=${SOURCEDIR}/${BUILDROOT}.tar.bz2
 LINUXPKG=linux-2.6.28.6.tar.bz2
 LINUXLOCATION=/media/devshare/TQ6410/linux
@@ -25,24 +25,24 @@ cd  ${PRJROOT}/source;
 
 
 if [ ! -e "$BUILDROOTPKG" ]; then
-	wget http://buildroot.net/downloads/buildroot-2011.08.tar.bz2;
+	wget http://buildroot.net/downloads/${BUILDROOT}.tar.bz2;
 fi
 
 #unpack
 if [ ! -d "$BUILDROOT" ]; then
-    tar xvf ./buildroot-2011.08.tar.bz2;
+    tar xvf ./${BUILDROOT}.tar.bz2;
 fi
 
 #patch
-cd ${PRJROOT}/source/buildroot-2011.08
+cd ${PRJROOT}/source/${BUILDROOT}
 ../../scripts/pre_build_script
 
 #configure 
 cd ${PRJROOT};
-cp ${PRJROOT}/configs/buildroot-2011.08.config ${PRJROOT}/source/buildroot-2011.08/.config -v
+cp ${PRJROOT}/configs/buildroot.config ${PRJROOT}/source/${BUILDROOT}/.config -v
 
 #build
-cd ${PRJROOT}/source/buildroot-2011.08
+cd ${PRJROOT}/source/${BUILDROOT}
 
 time make
 
