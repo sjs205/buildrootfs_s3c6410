@@ -2,6 +2,8 @@
 #ToDo:
 # Need to add recursive dir serching. 
 
+BUILDROOT=buildroot-2011.11
+
 PWD=`pwd`
 export PRJROOT=${PWD}
 
